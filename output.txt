@@ -1,5 +1,0 @@
-Individuals:
-UID: @I6@, Name: Olivia /Prower/
-
-Families:
-FID: @F7@, Husband: I9, Wife: I10

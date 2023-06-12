@@ -57,4 +57,4 @@ def validtags(tag):
     return tag in valid_tags
 
 #path to test file
-open_file('/Users/jacquelinelulaj/Desktop/hw2test.ged')
+open_file('Family_Tree_GEDCOM.ged')
