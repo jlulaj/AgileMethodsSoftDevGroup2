@@ -30,7 +30,8 @@ def extract_individuals(gedcom):
             death_date = next(gedcom).split("DATE")[1].strip()
             individuals[indi_id]["Death Date"] = death_date
         elif indi_id is not None:  # Check if indi_id has a value
-            individuals[indi_id]["Alive"] = True
+            if "Alive" not in individuals[indi_id]:
+                individuals[indi_id]["Alive"] = True
     return individuals
 
 # Function to extract family information
@@ -73,6 +74,8 @@ with open("Family_Tree_GEDCOM.ged", "r") as file:
 gedcom_iterator = iter(gedcom_data)
 
 individuals = extract_individuals(gedcom_iterator)
+
+gedcom_iterator = iter(gedcom_data)
 families = extract_families(gedcom_iterator)
 
 # Display individual information in a table
@@ -106,31 +109,21 @@ family_table.field_names = ["ID", "Married", "Divorced", "Husband ID", "Husband 
 for fam_id, fam_info in families.items():
     fam_table_row = [fam_id]
     if fam_info.get("Married"):
-        fam_table_row.append("Yes")
-        if fam_info.get("Divorced"):
-            fam_table_row.append("Yes")
-            fam_table_row.append("-")
-            fam_table_row.append("-")
-            fam_table_row.append("-")
-            fam_table_row.append("-")
-            fam_table_row.append("-")
-        else:
-            fam_table_row.append("No")
-            husband_name = individuals.get(fam_info["Husband ID"], {}).get("Name", "-")
-            wife_name = individuals.get(fam_info["Wife ID"], {}).get("Name", "-")
-            fam_table_row.append(fam_info["Husband ID"])
-            fam_table_row.append(husband_name)
-            fam_table_row.append(fam_info["Wife ID"])
-            fam_table_row.append(wife_name)
-            children = ", ".join(individuals.get(child_id, {}).get("Name", "-") for child_id in fam_info.get("Children", []))
-            fam_table_row.append(children)
+        fam_table_row.append(fam_info.get("Marriage Date"))
     else:
         fam_table_row.append("No")
-        fam_table_row.append("-")
-        fam_table_row.append("-")
-        fam_table_row.append("-")
-        fam_table_row.append("-")
-        fam_table_row.append("-")
+    if fam_info.get("Divorced"):
+        fam_table_row.append(fam_info.get("Divorce Date"))
+    else:
+        fam_table_row.append("No")
+    husband_name = individuals.get(fam_info["Husband ID"], {}).get("Name", "-")
+    wife_name = individuals.get(fam_info["Wife ID"], {}).get("Name", "-")
+    fam_table_row.append(fam_info["Husband ID"])
+    fam_table_row.append(husband_name)
+    fam_table_row.append(fam_info["Wife ID"])
+    fam_table_row.append(wife_name)
+    children = ", ".join(individuals.get(child_id, {}).get("Name", "-") for child_id in fam_info.get("Children", []))
+    fam_table_row.append(children)
     family_table.add_row(fam_table_row)
 
 # Print the tables
