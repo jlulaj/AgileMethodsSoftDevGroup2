@@ -30,7 +30,6 @@ def us01(families: dict, individuals: dict):
 
 # US07
 def us07(individuals: dict):
-    anomalies = []
     today = datetime.date.today()
 
     for indiID, indiInfo in individuals.items():
@@ -39,14 +38,14 @@ def us07(individuals: dict):
             age_at_death = death_date.year - datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date().year
 
             if age_at_death > 150:
-                anomalies.append(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Age at death is over 150 years ({age_at_death})")
+                print(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Age at death is over 150 years ({age_at_death})")
         else:
             birth_date = datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date()
             age = today.year - birth_date.year
 
             if age > 150:
-                anomalies.append(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Current age is over 150 years ({age})")
-    return anomalies
+                print(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Current age is over 150 years ({age})")
+    
 
 # US08
 
