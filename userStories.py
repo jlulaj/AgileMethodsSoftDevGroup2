@@ -116,6 +116,31 @@ def us15(families: dict, individuals: dict):
 # US37
 
 # US38
+def bdayWithin30Days(birthday):
+    today = datetime.date.today()
+    next_30_days = today + datetime.timedelta(days=30)
+    birthday_this_year = birthday.replace(year=today.year)
+
+    if today <= birthday_this_year <= next_30_days:
+        return True
+    else:
+        return False
+
+def us38(individuals: dict):
+    passed = True
+    bdayList = []
+
+    
+    for indiID, indiInfo in individuals.items():
+        if indiInfo.get("Alive", True) and "Birth Date" in indiInfo:
+            birth_date = datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date()
+            if bdayWithin30Days(birth_date):
+                bdayList.append(indiInfo["Name"])
+        
+    if len(bdayList) > 0:
+        print("US38: Individuals whose birthdays are coming up in the next 30 days: " + str(bdayList))   
+    else: 
+        print("PASSED: US38: No upcoming birthdays in the next 30 days")
 
 # US39
 def us39(families: dict, individuals: dict):
