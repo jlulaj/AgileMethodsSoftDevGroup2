@@ -108,7 +108,20 @@ def us15(families: dict, individuals: dict):
 # US20
 
 # US21
+def us21(families: dict, individuals: dict) -> list:
+    for fid in families.items():
+        husband_id = families[fid].get("Husband ID")
+        wife_id = families[fid].get("Wife ID")
+        if husband_id and wife_id:
+            husband_gender = individuals[husband_id].get("SEX")
+            wife_gender = individuals[wife_id].get("SEX")
 
+            if husband_gender != "M":
+                print(f"Anomaly in family: Incorrect gender role for husband {husband_id}")
+
+            if wife_gender != "F":
+                print(f"Anomaly in family: Incorrect gender role for wife {wife_id}")
+                
 # US22
 def us22(individuals: dict, families: dict):
     individual_ids = set()
