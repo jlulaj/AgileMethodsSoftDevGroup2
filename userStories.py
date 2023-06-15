@@ -56,6 +56,32 @@ def us07(individuals: dict):
 # US11
 
 # US12
+def us12(individuals: dict, families: dict):
+    for famID, famInfo in families.items():
+        children = famInfo.get("Children", [])
+        mother_id = famInfo.get("Wife ID")
+        father_id = famInfo.get("Husband ID")
+
+        if mother_id and father_id:
+            mother_birth_date = individuals[mother_id].get("Birth Date")
+            father_birth_date = individuals[father_id].get("Birth Date")
+
+            for child_id in children:
+                child_birth_date = individuals[child_id].get("Birth Date")
+
+                if mother_birth_date and child_birth_date:
+                    if calculate_age_difference(mother_birth_date, child_birth_date) >= 60:
+                        print(f"ANOMALY: FAMILY: US12: {famID}: Mother is 60 or more years older than child ({mother_id} - {child_id})")
+
+                if father_birth_date and child_birth_date:
+                    if calculate_age_difference(father_birth_date, child_birth_date) >= 80:
+                        print(f"ANOMALY: FAMILY: US12: {famID}: Father is 80 or more years older than child ({father_id} - {child_id})")
+
+def calculate_age_difference(date1: str, date2: str) -> int:
+    birth_date = datetime.datetime.strptime(date1, "%d %b %Y").date()
+    other_date = datetime.datetime.strptime(date2, "%d %b %Y").date()
+    age_difference = (other_date - birth_date).days // 365
+    return age_difference
 
 # US13
 
@@ -84,8 +110,48 @@ def us15(families: dict, individuals: dict):
 # US21
 
 # US22
+def us22(individuals: dict, families: dict):
+    individual_ids = set()
+    family_ids = set()
+    passed = True
+
+    for indiID in individuals.keys():
+        if indiID in individual_ids:
+            passed = False
+            print(f"ANOMALY: INDIVIDUAL: US22: {indiID}: Duplicate individual ID found")
+        else:
+            individual_ids.add(indiID)
+
+    for famID in families.keys():
+        if famID in family_ids:
+            passed = False
+            print(f"ANOMALY: FAMILY: US22: {famID}: Duplicate family ID found")
+        else:
+            family_ids.add(famID)
+
+    if passed:
+        print("PASSED: US22: All individual IDs and family IDs are unique.")
 
 # US23
+def us23(individuals: dict):
+    passed = True
+    unique_individuals = set()
+
+    for indiID, indiInfo in individuals.items():
+        name = indiInfo["Name"]
+        birth_date = indiInfo["Birth Date"]
+
+        # Concatenate name and birth date to create a unique identifier
+        identifier = f"{name}-{birth_date}"
+
+        if identifier in unique_individuals:
+            passed = False
+            print(f"ANOMALY: INDIVIDUAL: US23: {indiID}: Duplicate individual with the same name and birth date")
+        else:
+            unique_individuals.add(identifier)
+
+    if passed:
+        print("PASSED: US23: No more than one individual with the same name and birth date in the GEDCOM file.")
 
 # US24
 
