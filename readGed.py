@@ -80,10 +80,10 @@ def main():
 
     # Display individual information in a table
     individual_table = PrettyTable()
-    individual_table.field_names = ["ID", "Name", "Gender", "Age", "Alive", "Death", "Child", "Spouse"]
+    individual_table.field_names = ["ID", "Name", "Gender","Birth Date", "Age", "Alive", "Death", "Child", "Spouse"]
 
     for indi_id, indi_info in individuals.items():
-        indi_table_row = [indi_id, indi_info["Name"], indi_info["Gender"]]
+        indi_table_row = [indi_id, indi_info["Name"], indi_info["Gender"], indi_info.get("Birth Date", "-")]
         if "Birth Date" in indi_info:
             birth_date = datetime.datetime.strptime(indi_info["Birth Date"], "%d %b %Y")
             age = calculate_age(birth_date)
