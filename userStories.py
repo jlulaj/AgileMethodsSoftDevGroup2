@@ -182,7 +182,7 @@ def us29(individuals: dict):
             if ind["DEAT"] is not None:
                 print(f"Deceased : {ind['NAME']} (ID: {indi_id})")
    
-    #used to for unittest     
+    #used for unittest     
     #deceased = []
     #for indi_id, indi in individuals.items():
         #if 'DEAT' in indi:
