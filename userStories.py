@@ -1,5 +1,6 @@
 import datetime
 from readGed import extract_families, extract_individuals
+import readGed
 
 # Read the GEDCOM file
 with open("Family_Tree_GEDCOM.ged", "r") as file:
@@ -29,7 +30,8 @@ def us01(families: dict, individuals: dict):
 # US06
 
 # US07
-def us07(individuals: dict):
+def us07(families: dict, individuals: dict):
+    passed = True
     today = datetime.date.today()
 
     for indiID, indiInfo in individuals.items():
@@ -38,14 +40,18 @@ def us07(individuals: dict):
             age_at_death = death_date.year - datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date().year
 
             if age_at_death > 150:
+                passed = False
                 print(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Age at death is over 150 years ({age_at_death})")
         else:
             birth_date = datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date()
             age = today.year - birth_date.year
 
             if age > 150:
+                passed = False
                 print(f"ANOMALY: INDIVIDUAL: US07: {indiID}: Current age is over 150 years ({age})")
     
+    if passed:
+        print("PASSED: US07: No individuals over 150 years old")
 
 # US08
 
@@ -56,7 +62,8 @@ def us07(individuals: dict):
 # US11
 
 # US12
-def us12(individuals: dict, families: dict):
+def us12(families: dict, individuals: dict):
+    passed = True
     for famID, famInfo in families.items():
         children = famInfo.get("Children", [])
         mother_id = famInfo.get("Wife ID")
@@ -71,11 +78,16 @@ def us12(individuals: dict, families: dict):
 
                 if mother_birth_date and child_birth_date:
                     if calculate_age_difference(mother_birth_date, child_birth_date) >= 60:
+                        passed = False
                         print(f"ANOMALY: FAMILY: US12: {famID}: Mother is 60 or more years older than child ({mother_id} - {child_id})")
 
                 if father_birth_date and child_birth_date:
                     if calculate_age_difference(father_birth_date, child_birth_date) >= 80:
+                        passed = False
                         print(f"ANOMALY: FAMILY: US12: {famID}: Father is 80 or more years older than child ({father_id} - {child_id})")
+    if passed:
+        print("PASSED: US12: No mother 60 years older than child or father 80 years older than child")
+
 
 def calculate_age_difference(date1: str, date2: str) -> int:
     birth_date = datetime.datetime.strptime(date1, "%d %b %Y").date()
@@ -109,21 +121,27 @@ def us15(families: dict, individuals: dict):
 
 # US21
 def us21(families: dict, individuals: dict) -> list:
-    for fid in families.items():
-        husband_id = families[fid].get("Husband ID")
-        wife_id = families[fid].get("Wife ID")
+    passed = True
+    for fid in families.keys():
+        husband_id = families[fid]["Husband ID"]
+        wife_id = families[fid]["Wife ID"]
         if husband_id and wife_id:
-            husband_gender = individuals[husband_id].get("SEX")
-            wife_gender = individuals[wife_id].get("SEX")
+            husband_gender = individuals[husband_id]["Gender"]
+            wife_gender = individuals[wife_id]["Gender"]
 
             if husband_gender != "M":
-                print(f"Anomaly in family: Incorrect gender role for husband {husband_id}")
+                passed = False
+                print(f"ANOMALY: FAMILY: US21: {fid}: Incorrect gender role for husband {husband_id}")
 
             if wife_gender != "F":
-                print(f"Anomaly in family: Incorrect gender role for wife {wife_id}")
-                
+                passed = False
+                print(f"ANOMALY: FAMILY: US21: {fid}: Incorrect gender role for wife {wife_id}")
+
+    if passed:
+        print("PASSED: US21: No incorrect gender roles")   
+
 # US22
-def us22(individuals: dict, families: dict):
+def us22(families: dict, individuals: dict):
     individual_ids = set()
     family_ids = set()
     passed = True
@@ -146,7 +164,7 @@ def us22(individuals: dict, families: dict):
         print("PASSED: US22: All individual IDs and family IDs are unique.")
 
 # US23
-def us23(individuals: dict):
+def us23(families: dict, individuals: dict):
     passed = True
     unique_individuals = set()
 
@@ -177,10 +195,14 @@ def us23(individuals: dict):
 # US28
 
 # US29
-def us29(individuals: dict):
+def us29(families: dict, individuals: dict):
+    passed = True
     for indi_id, ind in individuals.items():
-            if ind["DEAT"] is not None:
-                print(f"Deceased : {ind['NAME']} (ID: {indi_id})")
+            if "Death Date" in ind.keys():
+                passed = False
+                print(f"US29: Deceased : {ind['Name']} (ID: {indi_id})")
+    if passed:
+        print("PASSED: US29: No deceased individuals")
    
     #used for unittest     
     #deceased = []
@@ -191,17 +213,23 @@ def us29(individuals: dict):
 
 # US30
 def us30(families: dict, individuals: dict):
-     for famid, fam in families.items():
-        husband_id = families[fam].get("Husband ID")
-        wife_id = families[fam].get("Wife ID")
-        husbandName = husband_id["Name"]
-        wifeName = wife_id["Name"]
+    passed = True
+    for fid in families.keys():
+        husband_id = families[fid]["Husband ID"]
+        wife_id = families[fid]["Wife ID"]
+        husbandName = individuals[husband_id]["Name"]
+        wifeName = individuals[wife_id]["Name"]
 
-        if husbandName and husbandName["Death"] is None:
-            print(f"Living Married: {husbandName} (ID: {husband_id})")
+        if husbandName and "Death Date" not in individuals[husband_id].keys():
+            passed = False
+            print(f"US30: Living Married: {husbandName} (ID: {husband_id})")
 
-        if wifeName and wifeName["Death"] is None:
-            print(f"Living Married: {wifeName} (ID: {wife_id})")
+        if wifeName and "Death Date" not in individuals[wife_id]:
+            passed = False
+            print(f"US30: Living Married: {wifeName} (ID: {wife_id})")
+
+    if passed:
+        print("PASSED: US30: No living and married individuals")
 
 # US31
 
@@ -228,7 +256,7 @@ def bdayWithin30Days(birthday):
     else:
         return False
 
-def us38(individuals: dict):
+def us38(families: dict, individuals: dict):
     passed = True
     bdayList = []
 
@@ -255,7 +283,7 @@ def us39(families: dict, individuals: dict):
             temp_date = datetime.date(today.year, temp_date.month, temp_date.day)
             if temp_date - today <= datetime.timedelta(30):
                 passed = False
-                print("FAMILY: US15: " + fid + ": Wedding anniversary within next 30 days (" + families[fid]["Marriage Date"] + ")")
+                print("FAMILY: US39: " + fid + ": Wedding anniversary within next 30 days (" + families[fid]["Marriage Date"] + ")")
     if passed:
         print("PASSED: US39: No wedding anniversaries in next 30 days")
 
@@ -267,4 +295,15 @@ def us39(families: dict, individuals: dict):
 
 def main():
     # will call each user story function here
-    pass
+
+    readGed.main()
+
+    functions = [us01, us07, us12, us15, us21, us22, us23, us29, us30, us38, us39]
+
+    for i in range(len(functions)):
+        functions[i](families, individuals)
+
+
+if __name__ == "__main__":
+   # stuff only to run when not called via 'import' here
+   main()
