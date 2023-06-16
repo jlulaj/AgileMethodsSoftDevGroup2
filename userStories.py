@@ -181,6 +181,13 @@ def us29(individuals: dict):
     for indi_id, ind in individuals.items():
             if ind["DEAT"] is not None:
                 print(f"Deceased : {ind['NAME']} (ID: {indi_id})")
+   
+    #used to for unittest     
+    #deceased = []
+    #for indi_id, indi in individuals.items():
+        #if 'DEAT' in indi:
+           #deceased.append(indi)
+    #return deceased
 
 # US30
 def us30(families: dict, individuals: dict):
