@@ -1,0 +1,60 @@
+Individuals:
++-----+-------------------+--------+-------------+-----+-------+-------------+-------+--------+
+|  ID |        Name       | Gender |  Birth Date | Age | Alive |    Death    | Child | Spouse |
++-----+-------------------+--------+-------------+-----+-------+-------------+-------+--------+
+|  I1 |   John /Johnson/  |   M    | 26 OCT 1975 |  47 |  Yes  |      -      |   F2  |   F1   |
+|  I2 | Allison /Bradley/ |   F    |  7 JUL 1977 |  45 |  Yes  |      -      |   -   |   F1   |
+|  I3 |  Allan /Johnson/  |   M    | 14 OCT 1950 |  72 |  Yes  |      -      |   -   |   F2   |
+|  I4 |    MJ /Ruppert/   |   F    |  9 OCT 1954 |  68 |  Yes  |      -      |   -   |   F2   |
+|  I5 |  Chris /Johnson/  |   M    |  5 MAR 1980 |  43 |  Yes  |      -      |   F2  |   F3   |
+|  I6 |   Sofia /Smith/   |   F    | 21 NOV 1981 |  41 |   No  | 10 DEC 2004 |   -   |   F4   |
+|  I7 |  Lauren /Calhoun/ |   F    |  7 SEP 1985 |  37 |  Yes  |      -      |   -   |   F3   |
+|  I8 | Anthony /Johnson/ |   M    | 25 APR 2007 |  16 |  Yes  |      -      |   F3  |   -    |
+|  I9 |  Lydia /Johnson/  |   F    | 13 DEC 2008 |  14 |  Yes  |      -      |   F3  |   -    |
+| I10 |  Peter /Johnson/  |   M    |  4 DEC 1998 |  24 |  Yes  |      -      |   F4  |   -    |
+| I11 |  Jerry /Johnson/  |   M    |  6 JUL 2000 |  22 |  Yes  |      -      |   F4  |   F5   |
+| I12 |  Alyssa /Johnson/ |   F    |  8 NOV 1997 |  25 |  Yes  |      -      |   F1  |   F6   |
+| I13 |   Zach /Walker/   |   M    |  4 DEC 1990 |  32 |  Yes  |      -      |   -   |   F7   |
+| I14 |    Will /Davis/   |   M    |  4 AUG 1991 |  31 |  Yes  |      -      |   -   |   F6   |
+| I15 |   Bill /Walker/   |   M    |  5 AUG 2019 |  3  |  Yes  |      -      |   F7  |   -    |
+| I16 |  Derrick /Davis/  |   M    |  5 MAY 2023 |  0  |  Yes  |      -      |   F6  |   -    |
+| I17 |   Maddie /Davis/  |   F    |  5 SEP 2021 |  1  |  Yes  |      -      |   F6  |   -    |
+| I18 |   Naomi /Blake/   |   F    |  6 DEC 2002 |  20 |  Yes  |      -      |   -   |   F5   |
+| I19 |  Harold /Johnson/ |   M    |  6 FEB 2023 |  0  |  Yes  |      -      |   F5  |   -    |
++-----+-------------------+--------+-------------+-----+-------+-------------+-------+--------+
+
+Families:
++----+------------+------------+------------+-----------------+---------+-------------------+------------------------------------+
+| ID |  Married   |  Divorced  | Husband ID |   Husband Name  | Wife ID |     Wife Name     |              Children              |
++----+------------+------------+------------+-----------------+---------+-------------------+------------------------------------+
+| F1 | 5 JUL 1995 |     No     |     I1     |  John /Johnson/ |    I2   | Allison /Bradley/ |          Alyssa /Johnson/          |
+| F2 | 5 NOV 1974 |     No     |     I3     | Allan /Johnson/ |    I4   |    MJ /Ruppert/   |  John /Johnson/, Chris /Johnson/   |
+| F3 | 7 DEC 2004 |     No     |     I5     | Chris /Johnson/ |    I7   |  Lauren /Calhoun/ | Anthony /Johnson/, Lydia /Johnson/ |
+| F4 |     No     |     No     |     I5     | Chris /Johnson/ |    I6   |   Sofia /Smith/   |  Peter /Johnson/, Jerry /Johnson/  |
+| F5 | 6 JUL 2022 |     No     |    I11     | Jerry /Johnson/ |   I18   |   Naomi /Blake/   |          Harold /Johnson/          |
+| F6 | 6 SEP 2021 |     No     |    I14     |   Will /Davis/  |   I12   |  Alyssa /Johnson/ |  Derrick /Davis/, Maddie /Davis/   |
+| F7 | 5 OCT 2018 | 7 JUL 2020 |    I13     |  Zach /Walker/  |   I12   |  Alyssa /Johnson/ |           Bill /Walker/            |
++----+------------+------------+------------+-----------------+---------+-------------------+------------------------------------+
+PASSED: US07: No individuals over 150 years old
+PASSED: US12: No mother 60 years older than child or father 80 years older than child
+PASSED: US15: No families with more than 15 siblings
+PASSED: US21: No incorrect gender roles
+PASSED: US22: All individual IDs and family IDs are unique.
+PASSED: US23: No more than one individual with the same name and birth date in the GEDCOM file.
+US29: Deceased : Sofia /Smith/ (ID: I6)
+US30: Living Married: John /Johnson/ (ID: I1)
+US30: Living Married: Allison /Bradley/ (ID: I2)
+US30: Living Married: Allan /Johnson/ (ID: I3)
+US30: Living Married: MJ /Ruppert/ (ID: I4)
+US30: Living Married: Chris /Johnson/ (ID: I5)
+US30: Living Married: Lauren /Calhoun/ (ID: I7)
+US30: Living Married: Chris /Johnson/ (ID: I5)
+US30: Living Married: Jerry /Johnson/ (ID: I11)
+US30: Living Married: Naomi /Blake/ (ID: I18)
+US30: Living Married: Will /Davis/ (ID: I14)
+US30: Living Married: Alyssa /Johnson/ (ID: I12)
+US30: Living Married: Zach /Walker/ (ID: I13)
+US30: Living Married: Alyssa /Johnson/ (ID: I12)
+US38: Individuals whose birthdays are coming up in the next 30 days: ['Allison /Bradley/', 'Jerry /Johnson/']
+FAMILY: US39: F1: Wedding anniversary within next 30 days (5 JUL 1995)
+FAMILY: US39: F5: Wedding anniversary within next 30 days (6 JUL 2022)
