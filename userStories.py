@@ -191,9 +191,9 @@ def us29(individuals: dict):
 
 # US30
 def us30(families: dict, individuals: dict):
-     for fid in families.items():
-        husband_id = families[fid].get("Husband ID")
-        wife_id = families[fid].get("Wife ID")
+     for famid, fam in families.items():
+        husband_id = families[fam].get("Husband ID")
+        wife_id = families[fam].get("Wife ID")
         husbandName = husband_id["Name"]
         wifeName = wife_id["Name"]
 
