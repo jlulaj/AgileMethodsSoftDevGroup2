@@ -179,8 +179,8 @@ def us23(individuals: dict):
 # US29
 def us29(individuals: dict):
     for indi_id, ind in individuals.items():
-            if ind["Death"] is not None:
-                print(f"Deceased : {ind['Name']} (ID: {indi_id})")
+            if ind["DEAT"] is not None:
+                print(f"Deceased : {ind['NAME']} (ID: {indi_id})")
 
 # US30
 def us30(families: dict, individuals: dict):
