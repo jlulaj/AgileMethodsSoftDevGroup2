@@ -177,8 +177,24 @@ def us23(individuals: dict):
 # US28
 
 # US29
+def us29(individuals: dict):
+    for indi_id, ind in individuals.items():
+            if ind["Death"] is not None:
+                print(f"Deceased : {ind['Name']} (ID: {indi_id})")
 
 # US30
+def us30(families: dict, individuals: dict):
+     for fid in families.items():
+        husband_id = families[fid].get("Husband ID")
+        wife_id = families[fid].get("Wife ID")
+        husbandName = husband_id["Name"]
+        wifeName = wife_id["Name"]
+
+        if husbandName and husbandName["Death"] is None:
+            print(f"Living Married: {husbandName} (ID: {husband_id})")
+
+        if wifeName and wifeName["Death"] is None:
+            print(f"Living Married: {wifeName} (ID: {wife_id})")
 
 # US31
 
