@@ -1,6 +1,7 @@
-import datetime
+from datetime import datetime, timedelta
 from readGed import extract_families, extract_individuals
 import readGed
+import datetime
 
 # Read the GEDCOM file
 with open("Family_Tree_GEDCOM.ged", "r") as file:
@@ -187,6 +188,32 @@ def us23(families: dict, individuals: dict):
 # US24
 
 # US25
+def us25(families: dict, individuals: dict):
+    passed = True
+
+    for famID, famInfo in families.items():
+        children = famInfo.get("Children", [])
+
+        first_names = set()
+        duplicate_first_names = set()
+
+        for childID in children:
+            child_info = individuals.get(childID)
+            if child_info is not None:
+                first_name = child_info["Name"].split()[0]
+
+                if first_name in first_names:
+                    passed = False
+                    duplicate_first_names.add(childID)
+                else:
+                    first_names.add(first_name)
+
+        if duplicate_first_names:
+            for childID in duplicate_first_names:
+                print(f"ANOMALY: FAMILY: US25: {famID}: Duplicate first name in family: {childID}")
+
+    if passed:
+        print("PASSED: US25: All families have unique first names for their children.")
 
 # US26
 
@@ -242,7 +269,27 @@ def us30(families: dict, individuals: dict):
 # US35
 
 # US36
-
+def us36(families, individuals):
+    today = datetime.date.today()
+    thirty_days_ago = today - datetime.timedelta(days=30)
+    
+    recent_deaths = []
+    
+    for indiID, indiInfo in individuals.items():
+        death_date_str = indiInfo.get("Death Date")
+        
+        if death_date_str:
+            death_date = datetime.datetime.strptime(death_date_str, "%d %b %Y").date()
+            
+            if death_date >= thirty_days_ago and death_date <= today:
+                recent_deaths.append((indiID, indiInfo["Name"]))
+    
+    if recent_deaths:
+        print("US36: Recent Deaths:")
+        for indiID, name in recent_deaths:
+            print(f"- {indiID}: {name}")
+    else:
+        print("US36: No recent deaths in the last 30 days.")
 # US37
 
 # US38
@@ -298,7 +345,7 @@ def main():
 
     readGed.main()
 
-    functions = [us01, us07, us12, us15, us21, us22, us23, us29, us30, us38, us39]
+    functions = [us01, us07, us12, us15, us21, us22, us23, us25, us29, us30, us36, us38, us39]
 
     for i in range(len(functions)):
         functions[i](families, individuals)
