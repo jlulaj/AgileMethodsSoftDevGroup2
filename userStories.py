@@ -38,6 +38,21 @@ def us04(families: dict, individuals: dict):
                 print(f"ANOMALY: FAMILY: US04: {famID}: Divorce occurred before marriage")
 
 # US05
+def us05(families: dict, individuals: dict):
+    for famID, famInfo in families.items():
+        husband_id = famInfo.get("Husband ID")
+        wife_id = famInfo.get("Wife ID")
+        marriage_date = famInfo.get("Marriage Date")
+
+        if husband_id and wife_id and marriage_date:
+            husband_death_date = individuals.get(husband_id, {}).get("Death Date")
+            wife_death_date = individuals.get(wife_id, {}).get("Death Date")
+
+            if husband_death_date and marriage_date > husband_death_date:
+                print(f"ANOMALY: FAMILY: US05: {famID}: Marriage occurred after husband's death")
+
+            if wife_death_date and marriage_date > wife_death_date:
+                print(f"ANOMALY: FAMILY: US05: {famID}: Marriage occurred after wife's death")
 
 # US06
 
