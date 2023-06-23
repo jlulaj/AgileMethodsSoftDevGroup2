@@ -25,6 +25,17 @@ def us01(families: dict, individuals: dict):
 # US03
 
 # US04
+def us04(families: dict, individuals: dict):
+    for famID, famInfo in families.items():
+        marriage_date = famInfo.get("Marriage Date")
+        divorce_date = famInfo.get("Divorce Date")
+
+        if marriage_date and divorce_date:
+            marriage_date = datetime.datetime.strptime(marriage_date, "%d %b %Y").date()
+            divorce_date = datetime.datetime.strptime(divorce_date, "%d %b %Y").date()
+
+            if divorce_date < marriage_date:
+                print(f"ANOMALY: FAMILY: US04: {famID}: Divorce occurred before marriage")
 
 # US05
 
