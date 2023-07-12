@@ -129,12 +129,16 @@ def calculate_age_difference(date1: str, date2: str) -> int:
 # US15
 def us15(families: dict, individuals: dict):
     passed = True
+    fam_list = []
     for fid in families.keys():
         if len(families[fid]['Children']) >= 15:
+            fam_list.append(fid)
             passed = False
             print("ANAMOLY: FAMILY: US15: " + fid + ": Family has more than 15 siblings (" + str(len(families[fid]['Children'])) + ")")
     if passed:
         print("PASSED: US15: No families with more than 15 siblings")
+    
+    return fam_list
 
 # US16
 
@@ -349,16 +353,20 @@ def us38(families: dict, individuals: dict):
 def us39(families: dict, individuals: dict):
     passed = True
     today = datetime.date.today()
+    fam_list = []
 
     for fid in families.keys():
         if "Marriage Date" in families[fid].keys():
             temp_date = datetime.datetime.strptime(families[fid]["Marriage Date"], '%d %b %Y')
             temp_date = datetime.date(today.year, temp_date.month, temp_date.day)
-            if temp_date - today <= datetime.timedelta(30):
+            if temp_date > today and temp_date - today <= datetime.timedelta(30):
+                fam_list.append(fid)
                 passed = False
                 print("FAMILY: US39: " + fid + ": Wedding anniversary within next 30 days (" + families[fid]["Marriage Date"] + ")")
     if passed:
         print("PASSED: US39: No wedding anniversaries in next 30 days")
+    
+    return fam_list
 
 # US40
 
