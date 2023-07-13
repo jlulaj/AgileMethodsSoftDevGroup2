@@ -289,7 +289,7 @@ def us25(families: dict, individuals: dict):
         children = famInfo.get("Children", [])
 
         first_names = set()
-        duplicate_first_names = set()
+        duplicate_first_names = []
 
         for childID in children:
             child_info = individuals.get(childID)
@@ -308,6 +308,8 @@ def us25(families: dict, individuals: dict):
 
     if passed:
         print("PASSED: US25: All families have unique first names for their children.")
+    
+    return duplicate_first_names 
 
 # US26
 
@@ -375,6 +377,42 @@ def us31(families: dict, individuals: dict):
 # US32
 
 # US33
+def us33(families, individuals):
+    orphaned_children = []
+    today = datetime.date.today()
+
+    for famID, famInfo in families.items():
+        if 'Children' in famInfo:
+            children_ids = famInfo['Children']
+            for child_id in children_ids:
+                if child_id in individuals:
+                    child_info = individuals[child_id]
+                    if 'Death Date' not in child_info or child_info['Death Date'] == 'NA':
+                        if 'Birth Date' in child_info:
+                            birth_date = datetime.datetime.strptime(child_info['Birth Date'], "%d %b %Y").date()
+                            age = today.year - birth_date.year
+
+                            if age < 18:
+                                # Check if both parents are dead
+                                if 'Husband ID' in famInfo and 'Wife ID' in famInfo:
+                                    husband_id = famInfo['Husband ID']
+                                    wife_id = famInfo['Wife ID']
+
+                                    if husband_id in individuals and wife_id in individuals:
+                                        husband_info = individuals[husband_id]
+                                        wife_info = individuals[wife_id]
+
+                                        if ('Death Date' in husband_info and husband_info['Death Date'] != 'NA') and ('Death Date' in wife_info and wife_info['Death Date'] != 'NA'):
+                                            orphaned_children.append((child_id, child_info['Name']))
+
+    if orphaned_children:
+        print("US33: Orphaned Children (both parents dead and child < 18 years old):")
+        for child_id, name in orphaned_children:
+            print(f"- {child_id}: {name}")
+    else:
+        print("US33: No orphaned children found in the GEDCOM file.")
+    
+    return orphaned_children
 
 # US34
 def us34(families: dict, individuals: dict):
@@ -428,7 +466,8 @@ def us35(families: dict, individuals:dict):
             print(f"- {indiID}: {name}")
     else:
         print("US35: No recent births in the last 30 days.")
-
+    
+    return recent_births
 
 
 # US36
@@ -515,7 +554,7 @@ def main():
     # call each user story function
     functions = [us01, us02, us04, us05, us07, 
                  us12, us15, 
-                 us21, us22, us23, us24, us25, us29, us30, 
+                 us21, us22, us23, us24, us25, us29, us30, us33, 
                  us34, us36, us38, us39]
 
     for i in range(len(functions)):
