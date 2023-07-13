@@ -21,6 +21,38 @@ def us01(families: dict, individuals: dict):
     pass
 
 # US02
+def us02(families: dict, individuals: dict):
+    passed = True
+    ind_list = []
+    
+    for fid in families.keys():
+        if "Marriage Date" in families[fid].keys():
+            temp_marriage = datetime.datetime.strptime(families[fid]["Marriage Date"], '%d %b %Y')
+        else:
+            continue
+
+        temp_husb_id = families[fid]['Husband ID']
+        temp_wife_id = families[fid]['Wife ID']
+
+        temp_husb_bday = datetime.datetime.strptime(individuals[temp_husb_id]['Birth Date'], '%d %b %Y')
+        temp_wife_bday = datetime.datetime.strptime(individuals[temp_wife_id]['Birth Date'], '%d %b %Y')
+
+        if temp_husb_bday > temp_marriage:
+            ind_list.append(temp_husb_id)
+            passed = False
+            print(f"ERROR: INDIVIDUAL: US02: {temp_husb_id}: Individual's birth date is after marriage date (Birth: {individuals[temp_husb_id]['Birth Date']}, Marriage: {families[fid]['Marriage Date']})")
+
+        if temp_wife_bday > temp_marriage:
+            ind_list.append(temp_wife_id)
+            passed = False
+            print(f"ERROR: INDIVIDUAL: US02: {temp_wife_id}: Individual's birth date is after marriage date (Birth: {individuals[temp_wife_id]['Birth Date']}, Marriage: {families[fid]['Marriage Date']})")
+
+    if passed:
+        print("PASSED: US02: No individuals with birth date after marriage date")
+
+    return ind_list
+
+
 
 # US03
 
@@ -216,6 +248,38 @@ def us23(families: dict, individuals: dict):
         print("PASSED: US23: No more than one individual with the same name and birth date in the GEDCOM file.")
 
 # US24
+def us24(families: dict, individuals: dict):
+    passed = True
+    fam_list = []
+    temp_families = families.copy()
+    for fid in families.keys():
+        if "Marriage Date" in families[fid].keys():
+            temp_marriage = datetime.datetime.strptime(families[fid]["Marriage Date"], '%d %b %Y')
+        else:
+            continue
+
+        temp_husb_name = individuals[families[fid]['Husband ID']]['Name']
+        temp_wife_name = individuals[families[fid]['Wife ID']]['Name']
+        temp_families.pop(fid)
+        for tfid in temp_families.keys():
+            if "Marriage Date" in temp_families[tfid].keys():
+                temp_marriage_2 = datetime.datetime.strptime(temp_families[tfid]["Marriage Date"], '%d %b %Y')
+            else:
+                continue
+
+            temp_husb_name_2 = individuals[temp_families[tfid]['Husband ID']]['Name']
+            temp_wife_name_2 = individuals[temp_families[tfid]['Wife ID']]['Name']
+
+            if temp_husb_name == temp_husb_name_2 and temp_wife_name == temp_wife_name_2 and temp_marriage == temp_marriage_2:
+                fam_list.append([fid, tfid])
+                passed = False
+                print(f"ANOMALY: FAMILY: US24: {fid},{tfid}: Two families with same husband name, wife name, and marriage date")
+    
+    if passed:
+        print("PASSED: US24: No two families with same husband name, wife name, and marriage date")
+
+    return fam_list
+
 
 # US25
 def us25(families: dict, individuals: dict):
@@ -295,6 +359,39 @@ def us30(families: dict, individuals: dict):
 # US33
 
 # US34
+def us34(families: dict, individuals: dict):
+    passed = True
+    fam_list = []
+
+    for fid in families.keys():
+        if "Marriage Date" in families[fid].keys():
+            temp_marriage = datetime.datetime.strptime(families[fid]["Marriage Date"], '%d %b %Y')
+        else:
+            continue
+        temp_husb_id = families[fid]['Husband ID']
+        temp_wife_id = families[fid]['Wife ID']
+
+        temp_husb_bday = datetime.datetime.strptime(individuals[temp_husb_id]['Birth Date'], '%d %b %Y')
+        temp_wife_bday = datetime.datetime.strptime(individuals[temp_wife_id]['Birth Date'], '%d %b %Y')
+
+        temp_husb_age = (temp_marriage - temp_husb_bday).days
+        temp_wife_age = (temp_marriage - temp_wife_bday).days
+
+        if temp_husb_age > 2 * temp_wife_age or temp_wife_age > 2 * temp_husb_age:
+            fam_list.append(fid)
+            passed = False
+            print(f"ANOMALY: FAMILY: US34: {fid}: Older spouse more than twice as old as younger spouse when married (Husband: {individuals[temp_husb_id]['Birth Date']}, Wife: {individuals[temp_wife_id]['Birth Date']}, Marriage: {families[fid]['Marriage Date']})")
+    
+    if passed:
+        print("PASSED: US34: No couple with older spouse more than twice as old as younger spouse when married.")
+
+    return fam_list
+
+
+
+        
+
+
 
 # US35
 
@@ -375,11 +472,15 @@ def us39(families: dict, individuals: dict):
 # US42
 
 def main():
-    # will call each user story function here
 
+    # print ged tabular output
     readGed.main()
 
-    functions = [us01, us07, us12, us15, us21, us22, us23, us25, us29, us30, us36, us38, us39]
+    # call each user story function
+    functions = [us01, us02, us04, us05, us07, 
+                 us12, us15, 
+                 us21, us22, us23, us24, us25, us29, us30, 
+                 us34, us36, us38, us39]
 
     for i in range(len(functions)):
         functions[i](families, individuals)
