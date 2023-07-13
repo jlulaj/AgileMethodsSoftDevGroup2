@@ -14,10 +14,22 @@ class storyTest(unittest.TestCase):
     # def test_us01(self):
         # some self.assert statement
     
+    # US02
+    def test_us02(self):
+        self.assertEqual([], userStories.us02(families, individuals))
+
     # US15
     def test_us15(self):
         self.assertEqual([], userStories.us15(families, individuals))
     
+    # US24
+    def test_us24(self):
+        self.assertEqual([], userStories.us24(families, individuals))
+    
+    # US34
+    def test_us34(self):
+        self.assertEqual([], userStories.us34(families, individuals))
+
     # US39
     def test_us39(self):
         self.assertEqual([], userStories.us39(families, individuals))
@@ -25,5 +37,7 @@ class storyTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    # Runs all implemented test functions
+    # Write this output to a file (acceptance test results file for submission)
     unittest.main(exit=False, verbosity=2)
 
