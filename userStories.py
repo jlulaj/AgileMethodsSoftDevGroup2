@@ -353,6 +353,24 @@ def us30(families: dict, individuals: dict):
         print("PASSED: US30: No living and married individuals")
 
 # US31
+def us31(families: dict, individuals: dict):
+    single_ind = []
+    today = datetime.date.today()
+    
+    for indiID, indiInfo in individuals.items():
+        if indiInfo.get("Alive", True) and "Birth Date" in indiInfo:
+            birth_date = datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date()
+            age = today.year - birth_date.year()
+
+            if age >= 30:
+                for famID, famInfo in families.items():
+                    if famInfo.get("Married", False):
+                        single_ind.append(indiInfo["Name"])
+    
+    if len(single_ind) > 0:
+        print("US31: Single Individuals, 30 years or older: " + str(single_ind))   
+    else: 
+        print("PASSED: US31: No single individuals over 30")
 
 # US32
 
@@ -388,12 +406,30 @@ def us34(families: dict, individuals: dict):
     return fam_list
 
 
-
-        
-
-
-
 # US35
+def us35(families: dict, individuals:dict):
+    today = datetime.date.today()
+    thirty_days_ago = today - datetime.timedelta(days=30)
+    
+    recent_births = []
+    
+    for indiID, indiInfo in individuals.items():
+        birth_date_str = indiInfo.get("Birth Date")
+        
+        if birth_date_str:
+            birth_date = datetime.datetime.strptime(birth_date_str, "%d %b %Y").date()
+            
+            if birth_date >= thirty_days_ago and birth_date <= today:
+                recent_births.append((indiID, indiInfo["Name"]))
+    
+    if recent_births:
+        print("US35: Recent Births:")
+        for indiID, name in recent_births:
+            print(f"- {indiID}: {name}")
+    else:
+        print("US35: No recent births in the last 30 days.")
+
+
 
 # US36
 def us36(families, individuals):
