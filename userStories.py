@@ -68,7 +68,7 @@ def us04(families: dict, individuals: dict):
 
             if divorce_date < marriage_date:
                 print(f"ANOMALY: FAMILY: US04: {famID}: Divorce occurred before marriage")
-    return []
+    return [] 
 
 # US05
 def us05(families: dict, individuals: dict):
@@ -86,8 +86,8 @@ def us05(families: dict, individuals: dict):
 
             if wife_death_date and marriage_date > wife_death_date:
                 print(f"ANOMALY: FAMILY: US05: {famID}: Marriage occurred after wife's death")
-    return []
-    
+    return [] 
+
 # US06
 
 # US07
@@ -113,7 +113,6 @@ def us07(families: dict, individuals: dict):
     
     if passed:
         print("PASSED: US07: No individuals over 150 years old")
-
     return []
 # US08
 
@@ -329,6 +328,8 @@ def us29(families: dict, individuals: dict):
                 print(f"US29: Deceased : {ind['Name']} (ID: {indi_id})")
     if passed:
         print("PASSED: US29: No deceased individuals")
+
+    return []
    
     #used for unittest     
     #deceased = []
@@ -357,6 +358,8 @@ def us30(families: dict, individuals: dict):
     if passed:
         print("PASSED: US30: No living and married individuals")
 
+    return []
+
 # US31
 def us31(families: dict, individuals: dict):
     single_ind = []
@@ -365,7 +368,7 @@ def us31(families: dict, individuals: dict):
     for indiID, indiInfo in individuals.items():
         if indiInfo.get("Alive", True) and "Birth Date" in indiInfo:
             birth_date = datetime.datetime.strptime(indiInfo["Birth Date"], "%d %b %Y").date()
-            age = today.year - birth_date.year()
+            age = today.year - birth_date.year
 
             if age >= 30:
                 for famID, famInfo in families.items():
@@ -376,6 +379,8 @@ def us31(families: dict, individuals: dict):
         print("US31: Single Individuals, 30 years or older: " + str(single_ind))   
     else: 
         print("PASSED: US31: No single individuals over 30")
+
+    return []
 
 # US32
 
@@ -523,6 +528,7 @@ def us38(families: dict, individuals: dict):
         print("US38: Individuals whose birthdays are coming up in the next 30 days: " + str(bdayList))   
     else: 
         print("PASSED: US38: No upcoming birthdays in the next 30 days")
+
     return []
 
 # US39
