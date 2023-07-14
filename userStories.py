@@ -564,8 +564,8 @@ def main():
     # call each user story function
     functions = [us01, us02, us04, us05, us07, 
                  us12, us15, 
-                 us21, us22, us23, us24, us25, us29, us30, us33, 
-                 us34, us36, us38, us39]
+                 us21, us22, us23, us24, us25, us29, us30, us31, us33, 
+                 us34, us35, us36, us38, us39]
 
     for i in range(len(functions)):
         functions[i](families, individuals)
