@@ -114,6 +114,7 @@ def us07(families: dict, individuals: dict):
     if passed:
         print("PASSED: US07: No individuals over 150 years old")
 
+    return []
 # US08
 
 # US09
