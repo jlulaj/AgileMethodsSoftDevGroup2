@@ -68,6 +68,7 @@ def us04(families: dict, individuals: dict):
 
             if divorce_date < marriage_date:
                 print(f"ANOMALY: FAMILY: US04: {famID}: Divorce occurred before marriage")
+    return []
 
 # US05
 def us05(families: dict, individuals: dict):
@@ -85,7 +86,8 @@ def us05(families: dict, individuals: dict):
 
             if wife_death_date and marriage_date > wife_death_date:
                 print(f"ANOMALY: FAMILY: US05: {famID}: Marriage occurred after wife's death")
-
+    return []
+    
 # US06
 
 # US07
@@ -520,6 +522,7 @@ def us38(families: dict, individuals: dict):
         print("US38: Individuals whose birthdays are coming up in the next 30 days: " + str(bdayList))   
     else: 
         print("PASSED: US38: No upcoming birthdays in the next 30 days")
+    return []
 
 # US39
 def us39(families: dict, individuals: dict):
