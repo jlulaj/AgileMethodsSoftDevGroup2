@@ -41,6 +41,18 @@ class storyTest(unittest.TestCase):
     # US25
     def test_us25(self):
         self.assertEqual([], userStories.us25(families, individuals))
+
+    # US29
+    def test_us29(self):
+        self.assertEqual([], userStories.us29(families, individuals))
+        
+    # US30
+    def test_us30(self):
+        self.assertEqual([], userStories.us30(families, individuals))
+
+    # US31
+    def test_us31(self):
+        self.assertEqual([], userStories.us31(families, individuals))
     
     # US33
     def test_us33(self):
