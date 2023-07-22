@@ -119,8 +119,50 @@ def us07(families: dict, individuals: dict):
 # US09
 
 # US10
-
+def us10(families: dict, individuals: dict):
+    passed = True
+    for famID, famInfo in families.items():
+        if "Marriage Date" in famInfo.keys():
+            marriage_date = datetime.datetime.strptime(famInfo["Marriage Date"], '%d %b %Y').date()
+            husband_id = famInfo["Husband ID"]
+            wife_id = famInfo["Wife ID"]
+            if husband_id in individuals and wife_id in individuals:
+                husband_birth_date = datetime.datetime.strptime(individuals[husband_id]["Birth Date"], '%d %b %Y').date()
+                wife_birth_date = datetime.datetime.strptime(individuals[wife_id]["Birth Date"], '%d %b %Y').date()
+                min_birth_date = marriage_date - datetime.timedelta(days=(14 * 365))
+                if husband_birth_date > min_birth_date or wife_birth_date > min_birth_date:
+                    passed = False
+                    print(f"ANOMALY: FAMILY: US10: {famID}: Marriage occurred before both spouses turned 14.")
+    if passed:
+        print("PASSED: US10: All marriages occurred at least 14 years after birth of both spouses.")
+    return []
+    
 # US11
+def get_marriages(individual: dict) -> list:
+    return [datetime.datetime.strptime(date, '%d %b %Y').date() for date in individual.get("Marriages", [])]
+
+def us11(families: dict, individuals: dict):
+    passed = True
+    for famID, famInfo in families.items():
+        if "Marriage Date" in famInfo.keys():
+            marriage_date = datetime.datetime.strptime(famInfo["Marriage Date"], '%d %b %Y').date()
+            husband_id = famInfo["Husband ID"]
+            wife_id = famInfo["Wife ID"]
+            if husband_id in individuals and wife_id in individuals:
+                husband_marriages = get_marriages(individuals[husband_id])
+                wife_marriages = get_marriages(individuals[wife_id])
+                for marriage_date_h in husband_marriages:
+                    if marriage_date_h != marriage_date and marriage_date_h > marriage_date:
+                        passed = False
+                        print(f"ANOMALY: FAMILY: US11: {famID}: Husband has another marriage during this marriage (Date: {marriage_date}, Other Marriage: {marriage_date_h})")
+                for marriage_date_w in wife_marriages:
+                    if marriage_date_w != marriage_date and marriage_date_w > marriage_date:
+                        passed = False
+                        print(f"ANOMALY: FAMILY: US11: {famID}: Wife has another marriage during this marriage (Date: {marriage_date}, Other Marriage: {marriage_date_w})")
+    if passed:
+        print("PASSED: US11: No instances of bigamy found in the family relationships.")
+    return []
+
 
 # US12
 def us12(families: dict, individuals: dict):
