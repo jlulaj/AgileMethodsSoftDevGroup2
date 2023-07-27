@@ -91,7 +91,7 @@ def us02(families: dict, individuals: dict):
 
 
 # US03
-def us03(individuals: dict):
+def us03(individuals: dict, families: dict):
     passed = True
     ind_list = []
     
