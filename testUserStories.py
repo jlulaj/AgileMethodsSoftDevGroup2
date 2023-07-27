@@ -18,6 +18,10 @@ class storyTest(unittest.TestCase):
     def test_us02(self):
         self.assertEqual([], userStories.us02(families, individuals))
 
+    # US03
+    def test_us02(self):
+        self.assertEqual([], userStories.us02(families, individuals))
+    
     # US04
     def test_us04(self):
         self.assertEqual([], userStories.us04(families, individuals))
@@ -25,6 +29,10 @@ class storyTest(unittest.TestCase):
     # US05
     def test_us05(self):
         self.assertEqual([], userStories.us05(families, individuals))
+
+    # US06
+    def test_us02(self):
+        self.assertEqual([], userStories.us02(families, individuals))
 
     # US07
     def test_us07(self):
