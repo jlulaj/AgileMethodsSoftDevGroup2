@@ -89,6 +89,26 @@ def us02(families: dict, individuals: dict):
 
 
 # US03
+def us03(individuals: dict):
+    passed = True
+    ind_list = []
+    
+    for indID, indInfo in individuals.items():
+        if "Birth Date" in indInfo.keys() and "Death Date" in indInfo.keys():
+            birth_date = datetime.datetime.strptime(indInfo["Birth Date"], '%d %b %Y')
+            death_date = datetime.datetime.strptime(indInfo["Death Date"], '%d %b %Y')
+
+            if birth_date > death_date:
+                ind_list.append(indID)
+                passed = False
+                print(f"ERROR: INDIVIDUAL: US03: {indID}: Individual's birth date is after death date (Birth: {indInfo['Birth Date']}, Death: {indInfo['Death Date']})")
+
+    if passed:
+        print("PASSED: US03: No individuals with birth date after death date")
+
+    return ind_list
+
+
 
 # US04
 def us04(families: dict, individuals: dict):
