@@ -123,6 +123,23 @@ def us05(families: dict, individuals: dict):
     return [] 
 
 # US06
+def us06(families: dict, individuals: dict):
+    for famID, famInfo in families.items():
+        husband_id = famInfo.get("Husband ID")
+        wife_id = famInfo.get("Wife ID")
+        divorce_date = famInfo.get("Divorce Date")
+
+        if husband_id and wife_id and divorce_date:
+            husband_death_date = individuals.get(husband_id, {}).get("Death Date")
+            wife_death_date = individuals.get(wife_id, {}).get("Death Date")
+
+            if husband_death_date and marriage_date > husband_death_date:
+                print(f"ANOMALY: FAMILY: US06: {famID}: Divorce occurred after husband's death")
+
+            if wife_death_date and marriage_date > wife_death_date:
+                print(f"ANOMALY: FAMILY: US06: {famID}: Divorce occurred after wife's death")
+    return []
+
 
 # US07
 def us07(families: dict, individuals: dict):
