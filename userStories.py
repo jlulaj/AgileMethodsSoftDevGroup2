@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from readGed import extract_families, extract_individuals
+from collections import defaultdict
 import readGed
 import datetime
+
 
 # Read the GEDCOM file
 with open("Family_Tree_GEDCOM.ged", "r") as file:
@@ -176,6 +178,41 @@ def us08(families: dict, individuals: dict):
     return ind_list
 
 # US09
+def us09(families: dict, individuals: dict):
+    passed = True
+
+    for famID, famInfo in families.items():
+        if "Children" in famInfo and "Wife ID" in famInfo and "Husband ID" in famInfo:
+            wifeID = famInfo["Wife ID"]
+            husbandID = famInfo["Husband ID"]
+
+            if wifeID in individuals and "Death Date" in individuals[wifeID]:
+                wife_death_date = datetime.datetime.strptime(individuals[wifeID]["Death Date"], "%d %b %Y").date()
+
+            if husbandID in individuals and "Death Date" in individuals[husbandID]:
+                husband_death_date = datetime.datetime.strptime(individuals[husbandID]["Death Date"], "%d %b %Y").date()
+
+            children = famInfo["Children"]
+
+            for childID in children:
+                if childID in individuals and "Birthday" in individuals[childID]:
+                    child_birth_date = datetime.datetime.strptime(individuals[childID]["Birthday"], "%d %b %Y").date()
+
+                    if "Death Date" in individuals[wifeID] and child_birth_date > wife_death_date:
+                        passed = False
+                        print(f"ANOMALY: FAMILY: US09: {famID}: Child {childID} born after mother's death")
+
+                    if "Death Date" in individuals[husbandID]:
+                        nine_months_after_father_death = husband_death_date + timedelta(days=270)  # 9 months ~ 270 days
+
+                        if child_birth_date > nine_months_after_father_death:
+                            passed = False
+                            print(f"ANOMALY: FAMILY: US09: {famID}: Child {childID} born more than 9 months after father's death")
+    
+    if passed:
+        print("PASSED: US09: All children are born before the death of the mother and before 9 months after the death of the father")
+    
+    return []
 
 # US10
 def us10(families: dict, individuals: dict):
@@ -260,6 +297,29 @@ def calculate_age_difference(date1: str, date2: str) -> int:
 # US13
 
 # US14
+def us14(families: dict, individuals: dict):
+    passed = True
+    for famID, famInfo in families.items():
+        children = famInfo.get("Children", [])
+
+        # Use a defaultdict to group children by birth date
+        birth_date_counts = defaultdict(int)
+
+        for childID in children:
+            child_info = individuals.get(childID)
+            if child_info is not None and "Birth Date" in child_info:
+                birth_date_counts[child_info["Birth Date"]] += 1
+
+        # Check if any group of children have more than five with the same birth date
+        for birth_date, count in birth_date_counts.items():
+            if count > 5:
+                passed = False
+                print(f"ANOMALY: FAMILY: US14: {famID}: More than five siblings born at the same time ({birth_date}): {count} siblings")
+
+    if passed:
+        print("PASSED: US14: No more than five siblings born at the same time in any family.")
+
+    return []
 
 # US15
 def us15(families: dict, individuals: dict):
@@ -663,8 +723,8 @@ def main():
     readGed.main()
 
     # call each user story function
-    functions = [us01, us02, us04, us05, us07, us08,
-                 us12, us15, 
+    functions = [us01, us02, us04, us05, us07, us08, us09, us10, us11,
+                 us12, us14, us15, 
                  us21, us22, us23, us24, us25, us29, us30, us31, us33, 
                  us34, us35, us36, us38, us39]
 
