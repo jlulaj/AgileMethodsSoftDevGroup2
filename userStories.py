@@ -18,7 +18,41 @@ families = extract_families(gedcom_iterator)
 
 # US01
 def us01(families: dict, individuals: dict):
-    pass
+    passed = True
+    date_list = []
+    today = datetime.date.today()
+
+    for fid in families.keys():
+        check_list = ["Marriage", "Divorce"]
+        for check in check_list:
+            temp_key = check + " Date"
+            if temp_key in families[fid].keys():
+                temp_day = datetime.datetime.strptime(families[fid][temp_key], '%d %b %Y').date()
+            else:
+                continue
+            if temp_day > today:
+                date_list.append(families[fid][temp_key])
+                passed = False
+                print(f"ERROR: FAMILY: US01: {fid}: {temp_key} is after today's date ({families[fid][temp_key]})")
+    
+    for iid in individuals.keys():
+        check_list = ["Birth", "Death"]
+        for check in check_list:
+            temp_key = check + " Date"
+            if temp_key in individuals[iid].keys():
+                temp_day = datetime.datetime.strptime(individuals[iid][temp_key], '%d %b %Y').date()
+            else:
+                continue
+            if temp_day > today:
+                date_list.append(individuals[iid][temp_key])
+                passed = False
+                print(f"ERROR: INDIVIDUAL: US01: {iid}: {temp_key} is after today's date ({individuals[iid][temp_key]})")
+
+    if passed:
+        print("PASSED: US01: No dates come after today's date")
+
+    return date_list
+
 
 # US02
 def us02(families: dict, individuals: dict):
@@ -115,6 +149,31 @@ def us07(families: dict, individuals: dict):
         print("PASSED: US07: No individuals over 150 years old")
     return []
 # US08
+def us08(families: dict, individuals: dict):
+    passed = True
+    ind_list = []
+
+    for fid in families.keys():
+        if "Children" in families[fid].keys() and "Marriage Date" in families[fid].keys():
+            temp_marriage = datetime.datetime.strptime(families[fid]["Marriage Date"], '%d %b %Y').date()
+            for iid in families[fid]['Children']:
+                temp_bday = datetime.datetime.strptime(individuals[iid]["Birth Date"], '%d %b %Y').date()
+                if temp_marriage > temp_bday:
+                    ind_list.append(iid)
+                    passed = False
+                    print(f"ANOMALY: INDIVIDUAL: US08: {iid}: Child born before marriage of parents")
+                
+                if "Divorce Date" in families[fid].keys():
+                    temp_divorce = datetime.datetime.strptime(families[fid]["Divorce Date"], '%d %b %Y').date()
+                    if temp_bday > temp_divorce + datetime.timedelta(days = 9 * 30):
+                        if iid not in ind_list:
+                            ind_list.append(iid)
+                        passed = False
+                        print(f"ANOMALY: INDIVIDUAL: US08: {iid}: Child born before marriage of parents")
+    
+    if passed:
+        print("PASSED: US08: No individuals born before marriage of parents or 9 months after divorce of parents")
+    return ind_list
 
 # US09
 
@@ -604,7 +663,7 @@ def main():
     readGed.main()
 
     # call each user story function
-    functions = [us01, us02, us04, us05, us07, 
+    functions = [us01, us02, us04, us05, us07, us08,
                  us12, us15, 
                  us21, us22, us23, us24, us25, us29, us30, us31, us33, 
                  us34, us35, us36, us38, us39]
