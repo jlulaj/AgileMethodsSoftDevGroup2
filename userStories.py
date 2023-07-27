@@ -760,7 +760,7 @@ def main():
     readGed.main()
 
     # call each user story function
-    functions = [us01, us02, us04, us05, us07, us08, us09, us10, us11,
+    functions = [us01, us02, us04, us03, us05, us06, us07, us08, us09, us10, us11,
                  us12, us14, us15, 
                  us21, us22, us23, us24, us25, us29, us30, us31, us33, 
                  us34, us35, us36, us38, us39]
