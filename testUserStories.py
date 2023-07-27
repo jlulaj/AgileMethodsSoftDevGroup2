@@ -11,8 +11,8 @@ class storyTest(unittest.TestCase):
     # Define a test function for each user story here, try to keep in order as we implement
 
     # US01
-    # def test_us01(self):
-        # some self.assert statement
+    def test_us01(self):
+        self.assertEqual([], userStories.us01(families, individuals))
     
     # US02
     def test_us02(self):
@@ -29,6 +29,11 @@ class storyTest(unittest.TestCase):
     # US07
     def test_us07(self):
         self.assertEqual([], userStories.us07(families, individuals))
+
+    # US08
+    def test_us08(self):
+        self.assertEqual(['I17'], userStories.us08(families, individuals))
+
     # US10
     def test_us10(self):
         self.assertEqual([], userStories.us10(families, individuals))
