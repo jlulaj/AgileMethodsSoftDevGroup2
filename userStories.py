@@ -373,10 +373,89 @@ def us15(families: dict, individuals: dict):
     return fam_list
 
 # US16
+def us16(families: dict, individuals: dict):
+    passed = True
+
+    for famID, famInfo in families.items():
+        if "Husband ID" in famInfo:
+            husband_id = famInfo["Husband ID"]
+            children = famInfo.get("Children", [])
+
+            if husband_id in individuals:
+                husband_last_name = get_last_name(individuals[husband_id]["Name"])
+
+                for child_id in children:
+                    if child_id in individuals and individuals[child_id]["Gender"] == "M":
+                        child_last_name = get_last_name(individuals[child_id]["Name"])
+                        if husband_last_name != child_last_name:
+                            passed = False
+                            print(f"ANOMALY: FAMILY: US16: {famID}: Husband and male children do not have the same last name")
+                            break
+
+    if passed:
+        print("PASSED: US16: All male members of each family have the same last name")
+    
+    return []
+
+def get_last_name(full_name: str) -> str:
+    name_parts = full_name.split()
+    if len(name_parts) > 1:
+        return name_parts[-1]
+    return ""
 
 # US17
+def us17(families: dict, individuals: dict):
+    passed = True
+
+    for fid, famInfo in families.items():
+        husband_id = famInfo.get("Husband ID")
+        wife_id = famInfo.get("Wife ID")
+        children = famInfo.get("Children", [])
+
+        if husband_id and wife_id:
+            husband_descendants = set()
+            wife_descendants = set()
+            find_descendants(husband_id, individuals, husband_descendants)
+            find_descendants(wife_id, individuals, wife_descendants)
+
+            if husband_id in wife_descendants or wife_id in husband_descendants:
+                passed = False
+                print(f"ANOMALY: FAMILY: US17: {fid}: Parent is marrying a descendant")
+    
+    if passed:
+        print("PASSED: US17: No instances of parents marrying their descendants")
+    
+    return []
+
+def find_descendants(indi_id: str, individuals: dict, descendants: set):
+    children = individuals.get(indi_id, {}).get("Children", [])
+    for child_id in children:
+        descendants.add(child_id)
+        find_descendants(child_id, individuals, descendants)
 
 # US18
+
+def us18(families: dict, individuals: dict):
+    passed = True
+
+    for fid, famInfo in families.items():
+        husband_id = famInfo.get("Husband ID")
+        wife_id = famInfo.get("Wife ID")
+        children = famInfo.get("Children", [])
+
+        if children:
+            siblings = set()
+            for child_id in children:
+                siblings.update(individuals.get(child_id, {}).get("Children", []))
+
+            if husband_id in siblings or wife_id in siblings:
+                passed = False
+                print(f"ANOMALY: FAMILY: US18: {fid}: Sibling is marrying another sibling")
+
+    if passed:
+        print("PASSED: US18: No instances of siblings marrying each other")
+
+    return []
 
 # US19
 
