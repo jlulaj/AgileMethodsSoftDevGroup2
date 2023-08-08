@@ -3,6 +3,7 @@ from readGed import extract_families, extract_individuals
 from collections import defaultdict
 import readGed
 import datetime
+import calendar
 
 
 # Read the GEDCOM file
@@ -846,6 +847,36 @@ def us39(families: dict, individuals: dict):
 # US41
 
 # US42
+def is_legitimate_date(date_str):
+    try:
+        year, month, day = map(int, date_str.split(' '))
+        return 1 <= month <= 12 and 1 <= day <= calendar.monthrange(year, month)[1]
+    except ValueError:
+        return False
+
+def us42(families, individuals):
+    passed = True
+    for family_id, family in families.items():
+        if not is_legitimate_date(family.get('marriage_date', '')) or \
+           'divorce_date' in family and not is_legitimate_date(family['divorce_date']):
+            print(f"Invalid dates in family: {family_id}")
+            passed = False
+
+        for child in family.get('children', []):
+            if child not in individuals:
+                print(f"Child {child} not found in individuals for family: {family_id}")
+                passed = False
+
+    for individual_name, individual in individuals.items():
+        if not is_legitimate_date(individual.get('birth_date', '')) or \
+           'death_date' in individual and not is_legitimate_date(individual['death_date']):
+            print(f"Invalid dates for individual: {individual_name}")
+            passed = False
+
+    if passed:
+        print("All dates are valid and legitimate.")
+    else:
+        print("Dates validation failed.")
 
 def main():
 
