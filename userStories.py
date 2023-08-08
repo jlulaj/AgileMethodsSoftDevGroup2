@@ -593,6 +593,20 @@ def us25(families: dict, individuals: dict):
 # US26
 
 # US27
+def calculate_age(birth_date):
+    today = datetime.now()
+    birth_date = datetime.strptime(birth_date, "%Y-%m-%d")
+    age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    return age
+
+def us27(families: dict, individuals: dict):
+    for family_id, ind in families.items():
+        for ind_id in ind:
+            if ind_id in individuals:
+                person = individuals[ind_id]
+                age = calculate_age(person['birthdate'])
+                print(f" - Name: {person['name']}, Age: {age}")
+        print()
 
 # US28
 
