@@ -73,6 +73,14 @@ class storyTest(unittest.TestCase):
     # US18
     def test_us18(self):
         self.assertEqual([], userStories.us18(families, individuals))
+    
+    # US19
+    def test_us19(self):
+        self.assertEqual([], userStories.us19(families, individuals))
+    
+    # US20
+    def test_us20(self):
+        self.assertEqual([], userStories.us20(families, individuals))
         
     # US24
     def test_us24(self):
@@ -81,11 +89,20 @@ class storyTest(unittest.TestCase):
     # US25
     def test_us25(self):
         self.assertEqual([], userStories.us25(families, individuals))
+    
+    # US26
+    def test_us26(self):
+        self.assertEqual([set(), set()], userStories.us26(families, individuals))
 
     # US27
     def test_us27(self):
         self.assertEqual([], userStories.us27(families, individuals))
     
+    # US28
+    def test_us28(self):
+        self.assertEqual({'F1': ['I12'], 'F2': ['I1', 'I5'], 'F3': ['I8', 'I9'], 'F4': ['I10', 'I11'], 'F5': ['I19'], 'F6': ['I17', 'I16'], 'F7': ['I15']},
+                            userStories.us28(families, individuals))
+
     # US29
     def test_us29(self):
         self.assertEqual([], userStories.us29(families, individuals))
@@ -116,7 +133,7 @@ class storyTest(unittest.TestCase):
 
     # US39
     def test_us39(self):
-        self.assertEqual([], userStories.us39(families, individuals))
+        self.assertEqual(['F6'], userStories.us39(families, individuals))
 
     # US42
     def test_us42(self):
