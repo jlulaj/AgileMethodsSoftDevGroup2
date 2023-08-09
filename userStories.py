@@ -333,6 +333,40 @@ def calculate_age_difference(date1: str, date2: str) -> int:
     return age_difference
 
 # US13
+def us13(families: dict, individuals: dict):
+    def calculate_age_in_days(birth_date1, birth_date2):
+        return (birth_date2 - birth_date1).days
+
+    passed = True
+
+    for ind_id, individual in individuals.items():
+        if "Families" in individual and "Birth Date" in individual:
+            birth_date = datetime.datetime.strptime(individual["Birth Date"], '%d %b %Y').date()
+            families = individual["Families"]
+
+            if len(families) > 1:
+                sibling_birth_dates = []
+                for family_id in families:
+                    family = families[family_id]
+                    siblings = family["Children"]
+
+                    for sibling_id in siblings:
+                        if sibling_id != ind_id and "Birth Date" in individuals[sibling_id]:
+                            sibling_birth_date = datetime.datetime.strptime(individuals[sibling_id]["Birth Date"], '%d %b %Y').date()
+                            sibling_birth_dates.append(sibling_birth_date)
+
+                for i in range(len(sibling_birth_dates)):
+                    for j in range(i + 1, len(sibling_birth_dates)):
+                        age_in_days = calculate_age_in_days(sibling_birth_dates[i], sibling_birth_dates[j])
+                        if age_in_days < 2 or age_in_days > 8 * 30:
+                            passed = False
+
+    if passed:
+        print("Passed: US13: Siblings are spaced properly")
+    else:
+        print("Failed: US13: Siblings are not spaced properly")
+return []
+
 
 # US14
 def us14(families: dict, individuals: dict):
@@ -694,6 +728,7 @@ def us27(families: dict, individuals: dict):
                 age = calculate_age(person['birthdate'])
                 print(f" - Name: {person['name']}, Age: {age}")
         print()
+    return []
 
 # US28
 def us28(families: dict, individuals: dict):
@@ -986,6 +1021,8 @@ def us42(families, individuals):
         print("All dates are valid and legitimate.")
     else:
         print("Dates validation failed.")
+
+    return []
 
 def main():
 
