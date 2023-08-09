@@ -459,8 +459,68 @@ def us18(families: dict, individuals: dict):
     return []
 
 # US19
+def us19(families: dict, individuals: dict):
+    passed = True
+    new_set = False
+    fam_list = []
+    cousins = []
+    for fid in families.keys():
+        if "Children" in families[fid].keys():
+            new_set = True
+            for cid in families[fid]["Children"]:
+                for fid2 in families.keys():
+                    if cid == families[fid2]["Husband ID"] or cid == families[fid2]["Wife ID"]:
+                        if "Children" in families[fid2].keys():
+                            if new_set:
+                                cousins.append([families[fid2]["Children"]])
+                                new_set = False
+                            else:
+                                cousins[len(cousins) - 1].append(families[fid2]["Children"])
+    
+    for cousin_set in cousins:
+        if len(cousin_set) == 1:
+            continue
+        for i in range(len(cousin_set)):
+            for j in range(1, len(cousin_set)):
+                for fid in families.keys():
+                    if (families[fid]["Husband ID"] == cousin_set[i] and families[fid]["Wife ID"] == cousin_set[j]) or \
+                        (families[fid]["Husband ID"] == cousin_set[j] and families[fid]["Wife ID"] == cousin_set[i]):
+                        passed = False
+                        fam_list.append(fid)
+                        print(f"ANOMALY: FAMILY: US19: {fid}: First cousins married")
+    
+    if passed:
+        print("PASSED: US19: No first cousins married")
+
+    return fam_list
+                            
+
+    
+    
 
 # US20
+def us20(families: dict, individuals: dict):
+    passed = True
+    fam_list = []
+    for fid in families.keys():
+        if "Children" in families[fid].keys():
+            for cid in families[fid]["Children"]:
+                for cid2 in families[fid]["Children"]:
+                    if cid == cid2:
+                        continue
+                    for fid2 in families.keys():
+                        if (families[fid2]["Husband ID"] == cid and families[fid2]["Wife ID"] == cid2) or \
+                            (families[fid2]["Husband ID"] == cid2 and families[fid2]["Wife ID"] == cid):
+                            print(f"ANOMALY: FAMILY: US20: {fid2}: Aunt or uncle married niece or nephew")
+                            passed = False
+                            fam_list.append(fid2)
+
+    if passed:
+        print("PASSED: US20: No aunts or uncles married niece or nephew")
+    
+    return fam_list
+                            
+
 
 # US21
 def us21(families: dict, individuals: dict) -> list:
@@ -592,6 +652,32 @@ def us25(families: dict, individuals: dict):
     return duplicate_first_names 
 
 # US26
+def us26(families: dict, individuals: dict):
+    passed = True
+    return_list = []
+
+    ind_ids = list(individuals.keys())
+    fam_ids = []
+
+    for fid in families.keys():
+        fam_ids.append(families[fid]["Husband ID"])
+        fam_ids.append(families[fid]["Wife ID"])
+        if "Children" in families[fid].keys():
+            fam_ids += families[fid]["Children"]
+    ind_set = set(ind_ids)
+    fam_set = set(fam_ids)
+    extra_ind = ind_set - fam_set
+    extra_fam = fam_set - ind_set
+    return_list = [extra_ind, extra_fam]
+    if len(extra_ind) > 0:
+        passed = False
+        print(f"ERROR: US26: Entries in invididual records that do not exist in family records ({extra_ind})")
+    if len(extra_fam) > 0:
+        passed = False
+        print(f"ERROR: US26: Entries in family records that do not exist in individual records ({extra_fam})")
+    if passed:
+        print("PASSED: US26: Entries between family and individual records are consistent")
+    return return_list
 
 # US27
 def calculate_age(birth_date):
@@ -610,6 +696,29 @@ def us27(families: dict, individuals: dict):
         print()
 
 # US28
+def us28(families: dict, individuals: dict):
+    fam_dict = {}
+    ordered_sibs = []
+    for fid in families.keys():
+        if 'Children' in families[fid].keys():
+            ordered_sibs = []
+            for iid in families[fid]['Children']:
+                temp_bday = datetime.datetime.strptime(individuals[iid]["Birth Date"], '%d %b %Y').date()
+
+                for i in range(len(ordered_sibs)):
+                    i_bday = datetime.datetime.strptime(individuals[ordered_sibs[i]]['Birth Date'], '%d %b %Y').date()
+                    if temp_bday <= i_bday:
+                        ordered_sibs.insert(i, iid)
+
+                if iid not in ordered_sibs:
+                    ordered_sibs.append(iid)
+            fam_dict[fid] = ordered_sibs
+            ordered_sibs = []
+
+    print("US28: Siblings ordered by age:", fam_dict)
+
+    return fam_dict
+
 
 # US29
 def us29(families: dict, individuals: dict):
@@ -885,10 +994,9 @@ def main():
 
     # call each user story function
     functions = [us01, us02, us04, us03, us05, us06, us07, us08, us09, us10, us11,
-                 us12, us14, us15, 
-                 us21, us22, us23, us24, us25, us29, us30, us31, us33, 
+                 us12, us14, us15, us19, us20,
+                 us21, us22, us23, us24, us25, us26, us28, us29, us30, us31, us33, 
                  us34, us35, us36, us38, us39]
-
     for i in range(len(functions)):
         functions[i](families, individuals)
 
