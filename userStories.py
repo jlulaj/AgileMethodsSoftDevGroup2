@@ -826,7 +826,7 @@ def us31(families: dict, individuals: dict):
     return []
 
 # US32
-def us32(individuals):
+def us32(families, individuals):
     multiple_births = []
 
     birth_dates = {}
@@ -1123,7 +1123,7 @@ def main():
     # call each user story function
     functions = [us01, us02, us03, us04, us05, us06, us07, us08, us09, us10, us11,
                  us12, us13, us14, us15, us16, us17, us18, us19, us20,
-                 us21, us22, us23, us24, us25, us26, us27, us28, us29, us30, us31, us33, 
+                 us21, us22, us23, us24, us25, us26, us27, us28, us29, us30, us31, us32, us33, 
                  us34, us35, us36, us37, us38, us39, us42] 
     for i in range(len(functions)):
         functions[i](families, individuals)   
