@@ -156,11 +156,18 @@ def us06(families: dict, individuals: dict):
             husband_death_date = individuals.get(husband_id, {}).get("Death Date")
             wife_death_date = individuals.get(wife_id, {}).get("Death Date")
 
-            if husband_death_date and marriage_date > husband_death_date:
+            husband_family = individuals.get(husband_id, {}).get("Families", {}).get(famID, {})
+            marriage_date = husband_family.get("Marriage Date")
+
+            if husband_death_date and marriage_date and marriage_date > husband_death_date:
                 print(f"ANOMALY: FAMILY: US06: {famID}: Divorce occurred after husband's death")
 
-            if wife_death_date and marriage_date > wife_death_date:
+            wife_family = individuals.get(wife_id, {}).get("Families", {}).get(famID, {})
+            marriage_date = wife_family.get("Marriage Date")
+
+            if wife_death_date and marriage_date and marriage_date > wife_death_date:
                 print(f"ANOMALY: FAMILY: US06: {famID}: Divorce occurred after wife's death")
+    
     return []
 
 
@@ -365,8 +372,8 @@ def us13(families: dict, individuals: dict):
         print("Passed: US13: Siblings are spaced properly")
     else:
         print("Failed: US13: Siblings are not spaced properly")
-return []
-
+    
+    return []
 
 # US14
 def us14(families: dict, individuals: dict):
@@ -819,6 +826,30 @@ def us31(families: dict, individuals: dict):
     return []
 
 # US32
+def us32(individuals):
+    multiple_births = []
+
+    birth_dates = {}
+    for ind_id, ind_data in individuals.items():
+        if "Birth Date" in ind_data:
+            birth_date = ind_data["Birth Date"]
+            if birth_date in birth_dates:
+                birth_dates[birth_date].append(ind_id)
+            else:
+                birth_dates[birth_date] = [ind_id]
+
+    for birth_date, ind_ids in birth_dates.items():
+        if len(ind_ids) > 1:
+            multiple_births.append((birth_date, ind_ids))
+
+    if multiple_births:
+        for birth_date, ind_ids in multiple_births:
+            print(f"ANOMALY: US32: Multiple births on {birth_date}: Individuals {', '.join(ind_ids)}")
+    else:
+        print("PASSED: US32: No multiple births found.")
+
+    return multiple_births
+
 
 # US33
 def us33(families, individuals):
@@ -937,6 +968,38 @@ def us36(families, individuals):
     else:
         print("US36: No recent deaths in the last 30 days.")
 # US37
+def us37(individuals: dict, families: dict):
+    from datetime import datetime, timedelta
+
+    today = datetime.today()
+    last_30_days = today - timedelta(days=30)
+
+    living_spouses_descendants = {}
+
+    for ind_id, ind_data in individuals.items():
+        if "Death Date" in ind_data:
+            death_date = datetime.strptime(ind_data["Death Date"], '%d %b %Y')
+            if last_30_days <= death_date <= today:
+                spouse_fam_id = ind_data.get("Spouse Family")
+                if spouse_fam_id:
+                    spouse_fam = families.get(spouse_fam_id)
+                    if spouse_fam:
+                        spouse_ids = [spouse_fam["Husband ID"], spouse_fam["Wife ID"]]
+                        descendants = [ind_id]
+                        for descendant_id in individuals.keys():
+                            if individuals[descendant_id].get("Child Family") == spouse_fam_id:
+                                descendants.append(descendant_id)
+                        living_spouses_descendants[ind_id] = (spouse_ids, descendants)
+
+    if living_spouses_descendants:
+        for ind_id, (spouse_ids, descendants) in living_spouses_descendants.items():
+            spouse_names = [individuals[spouse_id]["Name"] for spouse_id in spouse_ids if spouse_id in individuals]
+            descendant_names = [individuals[descendant_id]["Name"] for descendant_id in descendants if descendant_id in individuals]
+            print(f"ANOMALY: US37: Living spouses and descendants of {individuals[ind_id]['Name']} (ID: {ind_id}), who died in the last 30 days: Spouses: {', '.join(spouse_names)}, Descendants: {', '.join(descendant_names)}")
+    else:
+        print("PASSED: US37: No living spouses and descendants found for individuals who died in the last 30 days.")
+
+    return living_spouses_descendants
 
 # US38
 def bdayWithin30Days(birthday):
@@ -987,8 +1050,36 @@ def us39(families: dict, individuals: dict):
     return fam_list
 
 # US40
+def us40(errors: dict):
+    if errors:
+        for line_number, error_message in errors.items():
+            print(f"ERROR: Line {line_number}: {error_message}")
+    else:
+        print("PASSED: No errors found in the GEDCOM file.")
 
 # US41
+def us41(dates: dict):
+    corrected_dates = {}
+
+    for tag, date_value in dates.items():
+        parts = date_value.split()
+        if len(parts) == 2:
+            day_or_month, year = parts
+            if day_or_month.isdigit() and year.isdigit():
+                if len(day_or_month) == 4:  # If year is provided and no day or month
+                    corrected_date = f"01 JAN {year}"
+                    corrected_dates[tag] = corrected_date
+                else:
+                    corrected_date = f"01 {day_or_month} {year}"
+                    corrected_dates[tag] = corrected_date
+
+    if corrected_dates:
+        for tag, corrected_date in corrected_dates.items():
+            print(f"ANOMALY: US41: Accepted date format for {tag}: {corrected_date}")
+    else:
+        print("PASSED: US41: No date anomalies found.")
+
+    return corrected_dates
 
 # US42
 def is_legitimate_date(date_str):
@@ -1030,14 +1121,15 @@ def main():
     readGed.main()
 
     # call each user story function
-    functions = [us01, us02, us04, us03, us05, us06, us07, us08, us09, us10, us11,
-                 us12, us14, us15, us19, us20,
-                 us21, us22, us23, us24, us25, us26, us28, us29, us30, us31, us33, 
-                 us34, us35, us36, us38, us39]
+    functions = [us01, us02, us03, us04, us05, us06, us07, us08, us09, us10, us11,
+                 us12, us13, us14, us15, us16, us17, us18, us19, us20,
+                 us21, us22, us23, us24, us25, us26, us27, us28, us29, us30, us31, us33, 
+                 us34, us35, us36, us37, us38, us39, us42] 
     for i in range(len(functions)):
-        functions[i](families, individuals)
+        functions[i](families, individuals)   
 
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
+   
    main()

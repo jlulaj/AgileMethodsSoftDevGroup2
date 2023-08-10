@@ -54,7 +54,7 @@ class storyTest(unittest.TestCase):
     def test_us11(self):
         self.assertEqual([], userStories.us11(families, individuals))
 
-    # US14
+    # US13
     def test_us13(self):
         self.assertEqual([], userStories.us13(families, individuals))
         
@@ -119,6 +119,10 @@ class storyTest(unittest.TestCase):
     def test_us31(self):
         self.assertEqual([], userStories.us31(families, individuals))
     
+    # US32
+    def test_us32(self):
+        individuals = {"IND1": {"Birth Date": "2000-01-01"}, "IND2": {"Birth Date": "2000-01-01"}, "IND3": {"Birth Date": "2005-05-15"}, "IND4": {"Birth Date": "1995-03-20"}, "IND5": {"Birth Date": "2000-01-01"}}
+    
     # US33
     def test_us33(self):
         self.assertEqual([], userStories.us33(families, individuals))
@@ -130,7 +134,11 @@ class storyTest(unittest.TestCase):
     # US35
     def test_us35(self):
         self.assertEqual([], userStories.us35(families, individuals))
-    
+        
+    # US37
+    def test_us37(self):
+        self.assertEqual({}, userStories.us37(individuals, families))
+
     # US38
     def test_us38(self):
         self.assertEqual([], userStories.us38(families, individuals))
@@ -138,6 +146,16 @@ class storyTest(unittest.TestCase):
     # US39
     def test_us39(self):
         self.assertEqual(['F6'], userStories.us39(families, individuals))
+    
+    # US40
+    def test_us40(self):
+           errors = {10: "Invalid date format", 25: "Date out of range", 30: "Incorrect date value"}
+
+    # US41
+    def test_us41(self):
+        dates = {"DATE1": "1990 15", "DATE2": "20 2005", "DATE3": "3000 2022", "DATE4": "12345 2023", "DATE5": "FEB 2021", "DATE6": "05 DEC 1998"}
+
+        corrected_dates = userStories.us41(dates)
 
     # US42
     def test_us42(self):
