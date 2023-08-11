@@ -1128,6 +1128,9 @@ def main():
     for i in range(len(functions)):
         functions[i](families, individuals)   
 
+    #call separately because they take different args
+    us40(errors)
+    us41(dates)
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
