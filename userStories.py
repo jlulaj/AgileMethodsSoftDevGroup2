@@ -331,7 +331,7 @@ def us12(families: dict, individuals: dict):
                         print(f"ANOMALY: FAMILY: US12: {famID}: Father is 80 or more years older than child ({father_id} - {child_id})")
     if passed:
         print("PASSED: US12: No mother 60 years older than child or father 80 years older than child")
-
+    return []
 
 def calculate_age_difference(date1: str, date2: str) -> int:
     birth_date = datetime.datetime.strptime(date1, "%d %b %Y").date()
@@ -582,7 +582,8 @@ def us21(families: dict, individuals: dict) -> list:
                 print(f"ANOMALY: FAMILY: US21: {fid}: Incorrect gender role for wife {wife_id}")
 
     if passed:
-        print("PASSED: US21: No incorrect gender roles")   
+        print("PASSED: US21: No incorrect gender roles")
+    return []
 
 # US22
 def us22(families: dict, individuals: dict):
@@ -607,6 +608,8 @@ def us22(families: dict, individuals: dict):
     if passed:
         print("PASSED: US22: All individual IDs and family IDs are unique.")
 
+    return []
+
 # US23
 def us23(families: dict, individuals: dict):
     passed = True
@@ -627,6 +630,8 @@ def us23(families: dict, individuals: dict):
 
     if passed:
         print("PASSED: US23: No more than one individual with the same name and birth date in the GEDCOM file.")
+    
+    return []
 
 # US24
 def us24(families: dict, individuals: dict):
@@ -967,6 +972,9 @@ def us36(families, individuals):
             print(f"- {indiID}: {name}")
     else:
         print("US36: No recent deaths in the last 30 days.")
+
+    return []
+    
 # US37
 def us37(individuals: dict, families: dict):
     from datetime import datetime, timedelta
