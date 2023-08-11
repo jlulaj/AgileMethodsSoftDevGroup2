@@ -20,7 +20,7 @@ class storyTest(unittest.TestCase):
 
     # US03
     def test_us03(self):
-        self.assertEqual([], userStories.us02(families, individuals))
+        self.assertEqual([], userStories.us03(families, individuals))
     
     # US04
     def test_us04(self):
@@ -31,8 +31,8 @@ class storyTest(unittest.TestCase):
         self.assertEqual([], userStories.us05(families, individuals))
 
     # US06
-    def test_us02(self):
-        self.assertEqual([], userStories.us02(families, individuals))
+    def test_us06(self):
+        self.assertEqual([], userStories.us06(families, individuals))
 
     # US07
     def test_us07(self):
@@ -54,6 +54,10 @@ class storyTest(unittest.TestCase):
     def test_us11(self):
         self.assertEqual([], userStories.us11(families, individuals))
 
+    # US12
+    def test_us12(self):
+        self.assertEqual([], userStories.us12(families, individuals))
+    
     # US13
     def test_us13(self):
         self.assertEqual([], userStories.us13(families, individuals))
@@ -81,11 +85,24 @@ class storyTest(unittest.TestCase):
     # US19
     def test_us19(self):
         self.assertEqual([], userStories.us19(families, individuals))
-    
+
+        
     # US20
     def test_us20(self):
         self.assertEqual([], userStories.us20(families, individuals))
-        
+
+    # US21
+    def test_us21(self):
+        self.assertEqual([], userStories.us21(families, individuals))
+
+    # US22
+    def test_us22(self):
+        self.assertEqual([], userStories.us22(families, individuals))
+
+    # US23
+    def test_us23(self):
+        self.assertEqual([], userStories.us23(families, individuals))
+    
     # US24
     def test_us24(self):
         self.assertEqual([], userStories.us24(families, individuals))
@@ -134,7 +151,11 @@ class storyTest(unittest.TestCase):
     # US35
     def test_us35(self):
         self.assertEqual([], userStories.us35(families, individuals))
-        
+
+    # US36
+    def test_us36(self):
+        self.assertEqual([], userStories.us36(families, individuals))
+    
     # US37
     def test_us37(self):
         self.assertEqual({}, userStories.us37(individuals, families))
